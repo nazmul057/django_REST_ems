@@ -33,3 +33,6 @@ venv/
 # Ignore entire folder
 development_helpers/
 
+# Ignore the db if created by mistake
+/db.sqlite3
+

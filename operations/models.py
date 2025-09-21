@@ -51,6 +51,8 @@ class Performance(models.Model):
             models.Index(fields=["employee", "-review_date"]),
         ]
         '''
+        # No need for indexes since Django already created the foreign-key index.
+        # And the sequence is not too important for performance. Can be indexed later if needed.
         constraints = [
             models.CheckConstraint(
                 check=models.Q(rating__gte=1, rating__lte=5),
