@@ -1,0 +1,35 @@
+# --------------------
+# Python cache / bytecode
+# --------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --------------------
+# Django migrations (ignore all except __init__.py)
+# --------------------
+migrations/
+!migrations/__init__.py
+
+# --------------------
+# Custom test folder
+# --------------------
+small_tests/
+
+# --------------------
+# Virtual environment (if inside project)
+# --------------------
+venv/
+.env/
+
+# --------------------
+# IDE / Editor stuff
+# --------------------
+.vscode/
+.idea/
+*.swp
+
+
+# Ignore entire folder
+development_helpers/
+
