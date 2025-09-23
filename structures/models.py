@@ -6,6 +6,9 @@ class Department(models.Model):
 
     class Meta:
         ordering = ["name"]
+        indexes = [
+            models.Index(fields=["name"]),
+        ]
 
     def __str__(self) -> str:
         return f"id: {self.id}, name: {self.name}"

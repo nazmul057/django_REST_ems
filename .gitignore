@@ -1,38 +1,39 @@
-# --------------------
 # Python cache / bytecode
-# --------------------
 __pycache__/
 *.py[cod]
 *$py.class
 
-# --------------------
 # Django migrations (ignore all except __init__.py)
-# --------------------
-migrations/
-!migrations/__init__.py
+**/migrations/*
+!**/migrations/__init__.py
 
-# --------------------
-# Custom test folder
-# --------------------
-small_tests/
+# Virtual environments
+/.venv/
+# or, if you use 'venv' at root:
+#/venv/
 
-# --------------------
-# Virtual environment (if inside project)
-# --------------------
-venv/
-.env/
+# Environment files
+# /.env
 
-# --------------------
-# IDE / Editor stuff
-# --------------------
+# Custom test & helpers (root-only)
+# remove leading / if these exist in subfolders too -> development_helpers/ to remove in all subfolders.
+/small_tests/
+/development_helpers/
+
+# IDE / Editor
 .vscode/
 .idea/
 *.swp
 
-
-# Ignore entire folder
-development_helpers/
-
-# Ignore the db if created by mistake
+# SQLite (if created by mistake)
 /db.sqlite3
+/db.sqlite3-journal
+/db.sqlite3-shm
+/db.sqlite3-wal
 
+# Optional: tool caches & coverage
+#.pytest_cache/
+#.mypy_cache/
+#.ruff_cache/
+#.coverage
+#htmlcov/

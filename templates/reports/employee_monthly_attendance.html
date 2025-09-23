@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Monthly Attendance — {{ employee.name }}</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 16px; }
+    .wrap { max-width: 720px; margin: 0 auto; }
+    canvas { display: block; width: 100%; height: 360px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h2>Monthly Attendance — {{ employee.name }}</h2>
+    <canvas id="attChart"></canvas>
+  </div>
+
+  {# Safely pass data from Django to JS #}
+  {{ labels|json_script:"labels-data" }}
+  {{ present|json_script:"present-data" }}
+  {{ absent|json_script:"absent-data" }}
+  {{ late|json_script:"late-data" }}
+
+  <script>
+    const labels = JSON.parse(document.getElementById("labels-data").textContent);
+    const dataPresent = JSON.parse(document.getElementById("present-data").textContent);
+    const dataAbsent  = JSON.parse(document.getElementById("absent-data").textContent);
+    const dataLate    = JSON.parse(document.getElementById("late-data").textContent);
+
+    const ctx = document.getElementById("attChart").getContext("2d");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          { label: "Present", data: dataPresent },
+          { label: "Absent",  data: dataAbsent  },
+          { label: "Late",    data: dataLate    },
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: "Monthly Attendance Overview" },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                const label = context.dataset.label || "";
+                const val = context.parsed.y ?? context.parsed; // Chart.js 4 safety
+                return ` ${label}: ${val}`;
+              }
+            }
+          }
+        },
+        scales: {
+          x: { stacked: true },
+          y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

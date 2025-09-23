@@ -12,6 +12,11 @@ from common.helpers import SmallResultsSetPagination
 # -------------------- Attendance --------------------
 @api_view(["GET", "POST"])
 def attendance_list_and_create(request):
+    """
+    Query params:
+      - employee:   int   (employee id)
+      - page, page_size: pagination
+    """
     if request.method == "GET":
         # If employee id not provided, the query might be time consuming for big offsets through pagination
         # so, this can be kept for admin use only for now.
@@ -64,6 +69,11 @@ def attendance_details_and_modifications(request, pk: int):
 # -------------------- Performance --------------------
 @api_view(["GET", "POST"])
 def performance_list_and_create(request):
+    """
+    Query params:
+      - employee:   int   (employee id)
+      - page, page_size: pagination
+    """
     if request.method == "GET":
         # If employee id not provided, the query might be time consuming for big offsets through pagination
         # so, this can be kept for admin use only for now.

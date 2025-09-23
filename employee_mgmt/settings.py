@@ -14,20 +14,31 @@ from pathlib import Path
 
 import os
 from datetime import timedelta
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# print("Base Dir main: ", BASE_DIR)
+# print("Other Path: ", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-58_p8msli&*p_+&3)bts)eri2w7ve2^yl@ya&5^3q@akkv@dsq'
+SECRET_KEY = env('SECRET_KEY')
+# print("Secret key = ", SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
+# ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["127.0.0.1", "localhost"])
 ALLOWED_HOSTS = []
 
 
@@ -66,7 +77,7 @@ ROOT_URLCONF = 'employee_mgmt.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,34 +96,58 @@ WSGI_APPLICATION = 'employee_mgmt.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 '''
+Example database setups
+
 'default': {
     'ENGINE': 'django.db.backends.sqlite3',
     'NAME': BASE_DIR / 'db.sqlite3',
 }
+
+"default": {
+    "ENGINE": "django.db.backends.postgresql",
+    "NAME": os.getenv("PG_DB", "employee_management"),
+    "USER": os.getenv("PG_USER", "postgres"),
+    "PASSWORD": os.getenv("PG_PWD", "mypassword"),
+    "HOST": 'localhost', # os.getenv("POSTGRES_HOST", "localhost"),  # or 127.0.0.1
+    "PORT": '5432' # os.getenv("POSTGRES_PORT", "5432"),
+}
+
+"default": env.db_url(var="DATABASE_URL")
+
+
 '''
 
+# DATABASE_URL=psql://<username>:<password>@<host>:<port>/<database_name>
+# DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database_name>
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("PG_DB", "employee_management"),
-        "USER": os.getenv("PG_USER", "postg"),
-        "PASSWORD": os.getenv("PG_PWD", "mypassword"),
-        "HOST": 'localhost', # os.getenv("POSTGRES_HOST", "localhost"),  # or 127.0.0.1
-        "PORT": '5432' # os.getenv("POSTGRES_PORT", "5432"),
+        "NAME": os.environ["POSTGRES_DB"],
+        "USER": os.environ["POSTGRES_USER"],
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+        "HOST": os.environ["DB_HOST"], # os.getenv("POSTGRES_HOST", "localhost"),  # or 127.0.0.1
+        "PORT": os.environ["DB_PORT"] # os.getenv("POSTGRES_PORT", "5432"),
     }
 }
 
 '''
+# permission classes setup samples
+
 'DEFAULT_PERMISSION_CLASSES': [
    'rest_framework.permissions.AllowAny',
    ] # For unrestricted access
+
+'DEFAULT_PERMISSION_CLASSES': [
+    'rest_framework.permissions.IsAuthenticated',
+    ],
 '''
 
+# "iso-8601" = "%Y-%m-%d"
 REST_FRAMEWORK = {
-    "DATE_FORMAT": "%d-%m-%Y",
-    "DATE_INPUT_FORMATS": ["%d-%m-%Y", "iso-8601"],
+    "DATE_FORMAT": "%Y-%m-%d",
+    "DATE_INPUT_FORMATS": ["iso-8601", "%d-%m-%Y"],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
